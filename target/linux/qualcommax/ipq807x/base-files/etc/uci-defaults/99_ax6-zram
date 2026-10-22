@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$(board_name)" in
+redmi,ax6|redmi,ax6-stock) ;;
+*) exit 0 ;;
+esac
+
+# zram-swap defaults to half of MemTotal. Keep a size the user already chose,
+# since this script runs again after every sysupgrade.
+[ -n "$(uci -q get system.@system[0].zram_size_mb)" ] && exit 0
+
+uci -q batch <<-EOF
+	set system.@system[0].zram_size_mb='128'
+	commit system
+EOF
+
+exit 0

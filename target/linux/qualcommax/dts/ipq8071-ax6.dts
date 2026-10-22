@@ -34,6 +34,24 @@
 	};
 };
 
+&q6_region {
+	/* 512 MB board. The SoC default reserves 64 MB for a 1 GB layout.
+	 * 55 MB is the size this board used before that default was applied.
+	 * The following dump region starts at 0x4f000000, so only the length
+	 * changes.
+	 */
+	reg = <0x0 0x4b000000 0x0 0x3700000>;
+};
+
+&edma {
+	/* 512 MB board: the fill ring pins a page per descriptor, so the
+	 * default 2048 entries hold about 8 MB on the one queue this block
+	 * runs. 512 entries hold about 2 MB and still cover a gigabit burst.
+	 * 1 GB boards keep the driver default.
+	 */
+	rx-ring-size = <512>;
+};
+
 &wifi {
 	status = "okay";
 	qcom,calibration-variant = "Redmi-AX6";
