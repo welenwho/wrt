@@ -2842,6 +2842,27 @@ static int edma_probe(struct platform_device *pdev)
 
 	priv->tx_ring_size = EDMA_TX_RING_SIZE;
 	priv->rx_ring_size = EDMA_RX_RING_SIZE;
+	/* Optional per-board override. A fill ring pins a page per entry, so
+	 * a small-RAM board can shrink the receive ring without changing the
+	 * default used by every other board that shares this driver.
+	 */
+	{
+		u32 ring = 0;
+
+		if (!of_property_read_u32(dev->of_node, "rx-ring-size", &ring))
+			priv->rx_ring_size = ring;
+		if (!of_property_read_u32(dev->of_node, "tx-ring-size", &ring))
+			priv->tx_ring_size = ring;
+	}
+	if (!is_power_of_2(priv->rx_ring_size) ||
+	    priv->rx_ring_size < EDMA_MIN_RING_SIZE ||
+	    priv->rx_ring_size > EDMA_MAX_RING_SIZE ||
+	    !is_power_of_2(priv->tx_ring_size) ||
+	    priv->tx_ring_size < EDMA_MIN_RING_SIZE ||
+	    priv->tx_ring_size > EDMA_MAX_RING_SIZE)
+		return dev_err_probe(dev, -EINVAL,
+				     "ring size must be a power of two between %u and %u\n",
+				     EDMA_MIN_RING_SIZE, EDMA_MAX_RING_SIZE);
 	for (i = 0; i < num_clks; i++)
 		if (!strcmp(clks[i].id, "nss_edma_clk"))
 			priv->clk_rate = clk_get_rate(clks[i].clk);

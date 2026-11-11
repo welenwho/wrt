@@ -71,6 +71,19 @@ properties:
       Disable TSO and TSO6 on boards whose PPE egress path may forward a
       GSO aggregate as one frame instead of segmenting it for the uplink.
 
+  rx-ring-size:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description: |
+      Receive fill and descriptor ring length. Must be a power of two
+      between 64 and 8192. Absent means the driver default of 2048.
+      A fill ring pins one page per entry, so a 512 MB board can set 512.
+
+  tx-ring-size:
+    $ref: /schemas/types.yaml#/definitions/uint32
+    description: |
+      Transmit descriptor and completion ring length. Must be a power of
+      two between 64 and 8192. Absent means the driver default of 128.
+
 required:
   - compatible
   - reg

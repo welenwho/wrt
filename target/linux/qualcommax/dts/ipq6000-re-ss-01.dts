@@ -216,6 +216,13 @@
 
 &edma {
 	status = "okay";
+
+	/* 512 MB board: the default 2048-entry fill ring pins a page per
+	 * descriptor on every queue. 512 is the smallest power of two that
+	 * still covers a gigabit burst without pinning 8 MB per queue.
+	 * 1 GB boards keep the driver default.
+	 */
+	rx-ring-size = <512>;
 };
 
 &wifi {

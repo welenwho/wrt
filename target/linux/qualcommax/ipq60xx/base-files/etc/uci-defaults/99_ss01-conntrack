@@ -1,0 +1,13 @@
+#!/bin/sh
+
+[ "$(board_name)" = "jdcloud,re-ss-01" ] || exit 0
+
+# The shared default is 65535 entries and a hash sized for that. This board
+# has 512 MB, of which Linux sees about 400 MB. 8192 entries covers a home
+# gateway; the hash is allocated once and does not shrink until reboot.
+grep -q '^net.netfilter.nf_conntrack_max=' /etc/sysctl.conf 2>/dev/null || \
+	echo 'net.netfilter.nf_conntrack_max=8192' >> /etc/sysctl.conf
+grep -q '^net.netfilter.nf_conntrack_buckets=' /etc/sysctl.conf 2>/dev/null || \
+	echo 'net.netfilter.nf_conntrack_buckets=4096' >> /etc/sysctl.conf
+
+exit 0
