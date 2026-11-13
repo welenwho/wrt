@@ -141,7 +141,16 @@ nss_start() {
 		# of the 32 MiB default used with WLAN receive rings.
 		printf 'nss-wifi-drv wlan=0 pbuf_bytes=8388608\n' > "$LOCK/modules/nss-wifi"
 	else
-		printf 'nss-wifi-drv wlan=%s\n' "$wlan" > "$LOCK/modules/nss-wifi"
+		# 512 MB boards cannot lend the 32 MiB WLAN default. 3100000 is
+		# the size used before that default, and still fills the rings.
+		case "$(board_name)" in
+		jdcloud,re-ss-01|redmi,ax6|redmi,ax6-stock)
+			printf 'nss-wifi-drv wlan=%s pbuf_bytes=3100000\n' "$wlan" > "$LOCK/modules/nss-wifi"
+			;;
+		*)
+			printf 'nss-wifi-drv wlan=%s\n' "$wlan" > "$LOCK/modules/nss-wifi"
+			;;
+		esac
 	fi
 	kmodloader "$LOCK/modules/" 2>/dev/null
 	rm -f "$LOCK/modules/nss-wifi"

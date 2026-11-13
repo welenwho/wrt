@@ -89,6 +89,7 @@ firmware before enabling flow steering. Capacity is fixed and requires no
 configuration.
 
 With WLAN the firmware packet-descriptor pool defaults to 32 MiB (`pbuf_bytes`).
+RE-SS-01 and Redmi AX6 lend 3100000 bytes instead; those boards have 512 MB.
 It is allocated separately from the payload slabs and connection tables;
 it does not change the WLAN payload share or the fixed connection limits.
 These descriptor pages remain lent until the core stops; changing payload

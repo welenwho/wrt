@@ -214,6 +214,13 @@
 	};
 };
 
+&q6_region {
+	/* 512 MB board. The SoC default reserves 64 MB for a 1 GB layout.
+	 * 55 MB is the size this board used before that default was applied.
+	 */
+	reg = <0x0 0x4ab00000 0x0 0x3700000>;
+};
+
 &edma {
 	status = "okay";
 
